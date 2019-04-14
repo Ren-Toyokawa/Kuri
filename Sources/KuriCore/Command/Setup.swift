@@ -14,10 +14,7 @@ public struct Setup {
     public let args: [String]
     public let fileOperator: FileOperator
     
-    public init(
-        args: [String],
-        fileOperator: FileOperator
-        ) {
+    public init(args: [String], fileOperator: FileOperator) {
         self.args = args
         self.fileOperator = fileOperator
     }
@@ -27,29 +24,7 @@ public struct Setup {
     public func execute() throws {
         try setupYaml()
         try setupTemplate()
-        
         print("Successfully setup!")
-    }
-    
-    fileprivate func setupTemplate() throws {
-        let templatePath = "./\(Setup.templateDirectoryName)/"
-        try SetupComponentType.elements.forEach { componentType in
-            let directoryPath = templatePath + componentType.name + "/"
-            try fileOperator.createDirectory(for: directoryPath)
-            
-            let filePath = directoryPath + componentType.fileName
-            fileOperator.createFile(for: filePath)
-            
-            let content = try readSetupTemplate(for: (componentType))
-            try fileOperator.write(to: filePath, this: content)
-            
-            print("created template for \(componentType.name)")
-        }
-    }
-    
-    fileprivate func readSetupTemplate(for typeFor: SetupComponentType) throws -> String {
-        let template = typeFor.template()
-        return template.comment() + "\n" + template.interface() + "\n\n\n" + template.implement()
     }
     
     fileprivate func setupYaml() throws {
@@ -82,5 +57,26 @@ public struct Setup {
         try fileOperator.write(to: "./Kuri.yml", this: content)
         
         print("created Kuri.yml.")
+    }
+    
+    fileprivate func setupTemplate() throws {
+        let templatePath = "./\(Setup.templateDirectoryName)/"
+        try SetupComponentType.elements.forEach { componentType in
+            let directoryPath = templatePath + componentType.name + "/"
+            try fileOperator.createDirectory(for: directoryPath)
+            
+            let filePath = directoryPath + componentType.fileName
+            fileOperator.createFile(for: filePath)
+            
+            let content = try readSetupTemplate(for: (componentType))
+            try fileOperator.write(to: filePath, this: content)
+            
+            print("created template for \(componentType.name)")
+        }
+    }
+    
+    fileprivate func readSetupTemplate(for typeFor: SetupComponentType) throws -> String {
+        let template = typeFor.template()
+        return template.comment() + "\n" + template.interface() + "\n\n\n" + template.implement()
     }
 }

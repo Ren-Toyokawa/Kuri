@@ -15,10 +15,8 @@ public struct Generator {
     public let argument: GenerateArgument
     public let yaml: Yaml
     
-    public init(
-        argument: GenerateArgument,
-        yaml: Yaml
-        ) {
+    // 参照がどこにあるかわかりにくいから、メンバに持たせるべきでないのでは
+    public init(argument: GenerateArgument, yaml: Yaml) {
         self.argument = argument
         self.yaml = yaml
     }
@@ -27,6 +25,7 @@ public struct Generator {
     fileprivate var templateHeadPath: String = ""
     
     public mutating func execute() throws {
+        //
         let yamlReader = YamlReader<String>(yaml: yaml)
         templateHeadPath = yamlReader.value(for: .DefaultTemplateDirectoryPath)
         resetGenerateComponents(for: templateHeadPath)
@@ -44,6 +43,7 @@ public struct Generator {
             try setupForExec(with: option)
         }
         
+        // このguard 意味なくない?
         guard argument.hasOption else {
             try generate(with: entityName, for: generateComponents, and: templateHeadPath)
             return
@@ -169,7 +169,7 @@ fileprivate extension Generator {
             let stringYamlReader = YamlReader<String>(yaml: yaml)
             let booleanYamlReader = YamlReader<Bool>(yaml: yaml)
             
-            let generateRootPath = stringYamlReader.value(for: .GenerateRootPath, componentType: componentType) + prefix + "/"
+            let generateRootPath = stringYamlReader.value(for: .GenerateRootPath, componentType: componentType) + "/"
             let projectRootPath = stringYamlReader.value(for: .ProjectRootPath, componentType: componentType)
             let projectFileName = stringYamlReader.value(for: .ProjectFileName, componentType: componentType)
             
@@ -177,6 +177,7 @@ fileprivate extension Generator {
             let projectFilePath = projectRootPath + projectFileName + "/"
             let baseGeneratingDirectoryPath = generateRootPath
             let ShouldRemoveLayerNameFromDirectoryName = booleanYamlReader.value(for: .ShouldRemoveLayerNameFromDirectory, componentType: componentType)
+            
             let generatingDirectoryPath: String
             switch ShouldRemoveLayerNameFromDirectoryName {
             case true:

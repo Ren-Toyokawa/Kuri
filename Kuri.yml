@@ -1,0 +1,6 @@
+DefaultTemplateDirectoryPath: ./KuriTemplate/
+ProjectRootPath: ./
+ProjectFileName: Kuri.xcodeproj
+GenerateRootPath: ./Kuri/
+Target: Kuri
+ShouldRemoveLayerNameFromDirectory: false
